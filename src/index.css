@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta "Coliseo": travertino claro + púrpura imperial + oro de laurel */
+  --color-stone-50: #FAFAFB;
+  --color-stone-100: #F5F4F8;
+  --color-stone-200: #EBE9F0;
+  --color-stone-300: #DAD7E3;
+  --color-stone-400: #B3AEC4;
+  --color-stone-500: #8B84A3;
+  --color-stone-600: #655D7C;
+  --color-stone-700: #453D5C;
+  --color-stone-800: #2A2438;
+  --color-stone-900: #1B1626;
+
+  --color-imperial-50: #F4EEFB;
+  --color-imperial-100: #E5D6F5;
+  --color-imperial-200: #C9A8EA;
+  --color-imperial-300: #A876D9;
+  --color-imperial-400: #8A54C4;
+  --color-imperial-500: #5B2A83;
+  --color-imperial-600: #4B2170;
+  --color-imperial-700: #3B1A5A;
+  --color-imperial-800: #2C1444;
+  --color-imperial-900: #1E0D30;
+
+  --color-laurel-300: #F3DE9C;
+  --color-laurel-400: #EFC75E;
+  --color-laurel-500: #D9AC33;
+  --color-laurel-600: #B38B22;
+
+  --color-victory-50: #F0FBF6;
+  --color-victory-400: #34B37B;
+  --color-victory-600: #1F8F5F;
+
+  --color-defeat-400: #E4694F;
+  --color-defeat-600: #C74C33;
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-soft: 0 1px 2px rgba(27, 22, 38, 0.04), 0 8px 24px -8px rgba(27, 22, 38, 0.10);
+  --shadow-soft-lg: 0 4px 12px rgba(27, 22, 38, 0.06), 0 16px 40px -12px rgba(27, 22, 38, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(239, 199, 94, 0.4), 0 4px 20px -4px rgba(239, 199, 94, 0.35);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-stone-100);
+  color: var(--color-stone-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background-color: var(--color-imperial-200);
+  color: var(--color-imperial-900);
+}
+
+/* Scrollbar discreto para el cuadro de brackets en desktop */
+.bracket-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.bracket-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.bracket-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-stone-300);
+  border-radius: 999px;
+}
+.bracket-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-stone-400);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes podiumRise {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes crownFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(2deg);
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-12px) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes ringExpand {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.animate-podium-rise {
+  animation: podiumRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-crown-float {
+  animation: crownFloat 3.2s ease-in-out infinite;
+}
+
+.animate-confetti {
+  animation: confettiFall linear infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2.4s ease-in-out infinite;
+}
+
+.animate-ring-expand {
+  animation: ringExpand 2.6s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+}
+
+.shimmer-text {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-laurel-600) 30%,
+    var(--color-laurel-300) 45%,
+    #fff 50%,
+    var(--color-laurel-300) 55%,
+    var(--color-laurel-600) 70%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 3.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
