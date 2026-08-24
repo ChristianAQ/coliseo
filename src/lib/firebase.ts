@@ -1,5 +1,5 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app';
-import { getFirestore, type Firestore } from 'firebase/firestore';
+import { initializeFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,4 +11,6 @@ const firebaseConfig = {
 };
 
 export const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
-export const db: Firestore = getFirestore(firebaseApp);
+// Los Match tienen campos opcionales (label, nextMatchId...) que llegan como
+// `undefined` en vez de omitidos, y Firestore rechaza ese valor por defecto.
+export const db: Firestore = initializeFirestore(firebaseApp, { ignoreUndefinedProperties: true });

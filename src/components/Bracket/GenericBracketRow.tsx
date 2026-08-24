@@ -15,7 +15,7 @@ export function GenericBracketRow({ matches, onSubmit, roundLabel }: Props) {
   if (matches.length === 0) return null;
 
   return (
-    <div className="bracket-scroll overflow-x-auto pb-3">
+    <div className="bracket-scroll scroll-fade-x overflow-x-auto pb-3">
       <div className="relative" style={{ width: layout.width, height: layout.height + 28, minWidth: '100%' }}>
         <svg className="pointer-events-none absolute inset-0" width={layout.width} height={layout.height + 28} style={{ top: 28 }}>
           {layout.connectors.map((c, i) => (

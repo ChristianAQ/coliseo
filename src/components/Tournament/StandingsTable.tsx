@@ -8,7 +8,7 @@ interface Props {
 export function StandingsTable({ standings, qualifiersCount }: Props) {
   return (
     <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-soft">
-      <div className="overflow-x-auto">
+      <div className="scroll-fade-x overflow-x-auto" style={{ ['--scroll-fade-bg' as string]: '#fff' }}>
         <table className="w-full min-w-[520px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-stone-200 bg-stone-50 text-left text-xs font-semibold uppercase tracking-wide text-stone-500">
