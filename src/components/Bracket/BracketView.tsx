@@ -69,7 +69,7 @@ export function BracketView({ matches, onSubmit }: Props) {
   }, [mainMatches, round1Count, totalRounds, thirdPlace]);
 
   return (
-    <div className="bracket-scroll overflow-x-auto pb-4">
+    <div className="bracket-scroll scroll-fade-x overflow-x-auto pb-4">
       <div className="relative" style={{ width: layout.width, height: layout.height, minWidth: '100%' }}>
         <svg
           className="pointer-events-none absolute inset-0"

@@ -87,12 +87,13 @@ export function MatchCard({ match, onSubmit, width }: Props) {
             {isWinnerA && <Trophy className="h-3 w-3 shrink-0 text-laurel-500" strokeWidth={2.2} />}
           </div>
           {isEditable && editing ? (
+            // text-[16px]: por debajo de 16px, Safari en iOS hace zoom automático al enfocar el input.
             <input
               type="number"
               min={0}
               value={scoreA}
               onChange={(e) => setScoreA(e.target.value)}
-              className="h-7 w-11 shrink-0 rounded-lg border border-stone-300 text-center text-sm font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
+              className="h-7 w-11 shrink-0 rounded-lg border border-stone-300 text-center text-[16px] font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
             />
           ) : (
             match.scoreA !== null && (
@@ -117,7 +118,7 @@ export function MatchCard({ match, onSubmit, width }: Props) {
               min={0}
               value={scoreB}
               onChange={(e) => setScoreB(e.target.value)}
-              className="h-7 w-11 shrink-0 rounded-lg border border-stone-300 text-center text-sm font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
+              className="h-7 w-11 shrink-0 rounded-lg border border-stone-300 text-center text-[16px] font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
             />
           ) : (
             match.scoreB !== null && (

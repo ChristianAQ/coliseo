@@ -81,6 +81,24 @@ body {
   background-color: var(--color-stone-400);
 }
 
+/*
+ * Sombra en los bordes para contenedores con scroll horizontal (el cuadro
+ * de brackets y las tablas de clasificación): avisa de que hay más
+ * contenido a los lados, sobre todo en móvil donde no hay scrollbar visible.
+ * Se desvanece sola al llegar a cada extremo gracias a background-attachment.
+ */
+.scroll-fade-x {
+  --scroll-fade-bg: var(--color-stone-100);
+  background:
+    linear-gradient(to right, var(--scroll-fade-bg) 0%, transparent 24px) left,
+    linear-gradient(to left, var(--scroll-fade-bg) 0%, transparent 24px) right,
+    linear-gradient(to right, rgba(27, 22, 38, 0.12), transparent 16px) left,
+    linear-gradient(to left, rgba(27, 22, 38, 0.12), transparent 16px) right;
+  background-repeat: no-repeat;
+  background-size: 24px 100%, 24px 100%, 16px 100%, 16px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

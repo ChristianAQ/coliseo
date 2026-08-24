@@ -29,73 +29,77 @@ function FixtureRow({ match, onSubmit }: RowProps) {
   };
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-soft">
-      <div className="flex flex-1 items-center justify-end gap-2 truncate text-right">
-        <span
-          className={`truncate text-sm ${match.winnerId === match.participantA?.id ? 'font-semibold text-stone-900' : isDraw ? 'text-stone-700' : 'text-stone-600'}`}
-        >
-          {match.participantA?.name}
-        </span>
-        {match.winnerId === match.participantA?.id && <Check className="h-3.5 w-3.5 shrink-0 text-victory-600" />}
-      </div>
-
-      <div className="flex shrink-0 items-center gap-1.5">
-        {editing ? (
-          <>
-            <input
-              type="number"
-              min={0}
-              value={scoreA}
-              onChange={(e) => setScoreA(e.target.value)}
-              className="h-8 w-11 rounded-lg border border-stone-300 text-center text-sm font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
-            />
-            <span className="text-stone-400">-</span>
-            <input
-              type="number"
-              min={0}
-              value={scoreB}
-              onChange={(e) => setScoreB(e.target.value)}
-              className="h-8 w-11 rounded-lg border border-stone-300 text-center text-sm font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
-            />
-          </>
-        ) : match.status === 'COMPLETED' ? (
-          <span className="font-mono text-sm font-bold text-stone-900">
-            {match.scoreA} - {match.scoreB}
+    <div className="flex flex-col gap-2.5 rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-soft">
+      <div className="flex items-center gap-3">
+        <div className="flex flex-1 min-w-0 items-center justify-end gap-2 text-right">
+          <span
+            className={`truncate text-sm ${match.winnerId === match.participantA?.id ? 'font-semibold text-stone-900' : isDraw ? 'text-stone-700' : 'text-stone-600'}`}
+          >
+            {match.participantA?.name}
           </span>
-        ) : (
-          <span className="text-xs text-stone-400">vs</span>
+          {match.winnerId === match.participantA?.id && <Check className="h-3.5 w-3.5 shrink-0 text-victory-600" />}
+        </div>
+
+        {!editing && (
+          <div className="shrink-0">
+            {match.status === 'COMPLETED' ? (
+              <span className="font-mono text-sm font-bold text-stone-900">
+                {match.scoreA} - {match.scoreB}
+              </span>
+            ) : (
+              <span className="text-xs text-stone-400">vs</span>
+            )}
+          </div>
         )}
-      </div>
 
-      <div className="flex flex-1 items-center gap-2 truncate">
-        {match.winnerId === match.participantB?.id && <Check className="h-3.5 w-3.5 shrink-0 text-victory-600" />}
-        <span
-          className={`truncate text-sm ${match.winnerId === match.participantB?.id ? 'font-semibold text-stone-900' : isDraw ? 'text-stone-700' : 'text-stone-600'}`}
-        >
-          {match.participantB?.name}
-        </span>
-      </div>
+        <div className="flex flex-1 min-w-0 items-center gap-2">
+          {match.winnerId === match.participantB?.id && <Check className="h-3.5 w-3.5 shrink-0 text-victory-600" />}
+          <span
+            className={`truncate text-sm ${match.winnerId === match.participantB?.id ? 'font-semibold text-stone-900' : isDraw ? 'text-stone-700' : 'text-stone-600'}`}
+          >
+            {match.participantB?.name}
+          </span>
+        </div>
 
-      <div className="shrink-0">
-        {editing ? (
-          <div className="flex gap-1.5">
-            <button
-              onClick={handleSave}
-              disabled={!canSave}
-              className="rounded-lg bg-imperial-500 px-2.5 py-1 text-xs font-semibold text-white hover:bg-imperial-600 disabled:bg-stone-300"
-            >
-              Guardar
-            </button>
-            <button onClick={() => setEditing(false)} className="rounded-lg px-2 py-1 text-xs text-stone-500 hover:text-stone-700">
-              Cancelar
+        {!editing && (
+          <div className="shrink-0">
+            <button onClick={() => setEditing(true)} className="rounded-lg px-2.5 py-1 text-xs font-semibold text-imperial-600 hover:bg-imperial-50">
+              {match.status === 'COMPLETED' ? 'Editar' : 'Resultado'}
             </button>
           </div>
-        ) : (
-          <button onClick={() => setEditing(true)} className="rounded-lg px-2.5 py-1 text-xs font-semibold text-imperial-600 hover:bg-imperial-50">
-            {match.status === 'COMPLETED' ? 'Editar' : 'Resultado'}
-          </button>
         )}
       </div>
+
+      {editing && (
+        <div className="flex items-center justify-center gap-2 border-t border-stone-100 pt-2.5">
+          {/* text-[16px]: por debajo de 16px, Safari en iOS hace zoom automático al enfocar el input. */}
+          <input
+            type="number"
+            min={0}
+            value={scoreA}
+            onChange={(e) => setScoreA(e.target.value)}
+            className="h-8 w-12 rounded-lg border border-stone-300 text-center text-[16px] font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
+          />
+          <span className="text-stone-400">-</span>
+          <input
+            type="number"
+            min={0}
+            value={scoreB}
+            onChange={(e) => setScoreB(e.target.value)}
+            className="h-8 w-12 rounded-lg border border-stone-300 text-center text-[16px] font-mono focus:outline-none focus:ring-2 focus:ring-imperial-300"
+          />
+          <button
+            onClick={handleSave}
+            disabled={!canSave}
+            className="ml-1 rounded-lg bg-imperial-500 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-imperial-600 disabled:bg-stone-300"
+          >
+            Guardar
+          </button>
+          <button onClick={() => setEditing(false)} className="rounded-lg px-2 py-1.5 text-xs text-stone-500 hover:text-stone-700">
+            Cancelar
+          </button>
+        </div>
+      )}
     </div>
   );
 }
