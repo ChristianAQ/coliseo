@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { Header } from '@/components/Layout/Header';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
@@ -11,6 +11,7 @@ import { TournamentPage } from '@/components/Tournament/TournamentPage';
 import { generateSingleEliminationMatches, generateDoubleEliminationMatches, reportMatchResult } from '@/lib/bracket';
 import { generateRoundRobinMatches, reportGroupMatchResult, defaultQualifiers } from '@/lib/roundRobin';
 import { isTournamentComplete, generateLeaguePlayoffs } from '@/lib/tournament';
+import { saveTournament, loadTournament, rememberLastTournamentId, getLastTournamentId, forgetLastTournamentId } from '@/lib/tournamentsRepo';
 import { BRACKET_SIZES } from '@/types';
 import type { Match, ParticipantType, PairingMode, Tournament, TournamentFormat } from '@/types';
 
@@ -37,7 +38,7 @@ function adjustCountForFormat(count: number, format: TournamentFormat): number {
 }
 
 export default function App() {
-  const [stage, setStage] = useState<'wizard' | 'tournament'>('wizard');
+  const [stage, setStage] = useState<'loading' | 'wizard' | 'tournament'>('loading');
   const [step, setStep] = useState(0);
 
   const [name, setName] = useState('');
@@ -49,6 +50,38 @@ export default function App() {
   const [qualifiersCount, setQualifiersCount] = useState(4);
 
   const [tournament, setTournament] = useState<Tournament | null>(null);
+
+  // Al arrancar, si hay un torneo guardado (Firestore) intentamos retomarlo
+  // para que no se pierda al recargar la página.
+  useEffect(() => {
+    const lastId = getLastTournamentId();
+    if (!lastId) {
+      setStage('wizard');
+      return;
+    }
+    loadTournament(lastId)
+      .then((loaded) => {
+        if (loaded) {
+          setTournament(loaded);
+          setStage('tournament');
+        } else {
+          forgetLastTournamentId();
+          setStage('wizard');
+        }
+      })
+      .catch((err) => {
+        console.error('No se pudo cargar el torneo guardado en Firestore', err);
+        setStage('wizard');
+      });
+  }, []);
+
+  // Persiste en Firestore cada cambio del torneo activo (resultados, playoffs...).
+  useEffect(() => {
+    if (!tournament) return;
+    void saveTournament(tournament).catch((err) => {
+      console.error('No se pudo guardar el torneo en Firestore', err);
+    });
+  }, [tournament]);
 
   const handleCountChange = (count: number) => {
     setNames((prev) => {
@@ -120,6 +153,7 @@ export default function App() {
     };
 
     setTournament(newTournament);
+    rememberLastTournamentId(newTournament.id);
     setStage('tournament');
   };
 
@@ -157,7 +191,16 @@ export default function App() {
     setPairingMode('ORDER');
     setQualifiersCount(4);
     setTournament(null);
+    forgetLastTournamentId();
   };
+
+  if (stage === 'loading') {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-stone-100">
+        <p className="text-sm font-medium text-stone-500">Cargando...</p>
+      </div>
+    );
+  }
 
   if (stage === 'tournament' && tournament) {
     return (
