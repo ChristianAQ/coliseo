@@ -1,8 +1,11 @@
+import { ListChecks } from 'lucide-react';
+
 interface HeaderProps {
   onLogoClick?: () => void;
+  onViewTournaments?: () => void;
 }
 
-export function Header({ onLogoClick }: HeaderProps) {
+export function Header({ onLogoClick, onViewTournaments }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-stone-100/85 backdrop-blur-md relative">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-imperial-300 to-transparent" />
@@ -22,6 +25,16 @@ export function Header({ onLogoClick }: HeaderProps) {
             Coliseo
           </span>
         </button>
+
+        {onViewTournaments && (
+          <button
+            onClick={onViewTournaments}
+            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200/70 hover:text-imperial-600"
+          >
+            <ListChecks className="h-4 w-4" />
+            <span className="hidden sm:inline">Mis torneos</span>
+          </button>
+        )}
       </div>
     </header>
   );
