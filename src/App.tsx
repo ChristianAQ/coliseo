@@ -8,6 +8,7 @@ import { Step2Format } from '@/components/Wizard/Step2Format';
 import { Step3Participants } from '@/components/Wizard/Step3Participants';
 import { Step4Pairings } from '@/components/Wizard/Step4Pairings';
 import { TournamentPage } from '@/components/Tournament/TournamentPage';
+import { TournamentListPage } from '@/components/Tournament/TournamentListPage';
 import { generateSingleEliminationMatches, generateDoubleEliminationMatches, reportMatchResult } from '@/lib/bracket';
 import { generateRoundRobinMatches, reportGroupMatchResult, defaultQualifiers } from '@/lib/roundRobin';
 import { isTournamentComplete, generateLeaguePlayoffs } from '@/lib/tournament';
@@ -47,7 +48,7 @@ function adjustCountForFormat(count: number, format: TournamentFormat): number {
 }
 
 export default function App() {
-  const [stage, setStage] = useState<'loading' | 'wizard' | 'tournament'>('loading');
+  const [stage, setStage] = useState<'loading' | 'wizard' | 'tournament' | 'list'>('loading');
   const [step, setStep] = useState(0);
 
   const [name, setName] = useState('');
@@ -208,6 +209,12 @@ export default function App() {
     forgetLastTournamentId();
   };
 
+  const openTournamentFromList = (t: Tournament) => {
+    setTournament(t);
+    rememberLastTournamentId(t.id);
+    setStage('tournament');
+  };
+
   if (stage === 'loading') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-stone-100">
@@ -216,10 +223,23 @@ export default function App() {
     );
   }
 
-  if (stage === 'tournament' && tournament) {
+  if (stage === 'list') {
     return (
       <div className="min-h-screen bg-stone-100">
         <Header onLogoClick={resetWizard} />
+        {syncError && <SyncErrorBanner />}
+        <TournamentListPage
+          onSelect={openTournamentFromList}
+          onBack={() => setStage(tournament ? 'tournament' : 'wizard')}
+        />
+      </div>
+    );
+  }
+
+  if (stage === 'tournament' && tournament) {
+    return (
+      <div className="min-h-screen bg-stone-100">
+        <Header onLogoClick={resetWizard} onViewTournaments={() => setStage('list')} />
         {syncError && <SyncErrorBanner />}
         <TournamentPage
           tournament={tournament}
@@ -234,7 +254,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-stone-100">
-      <Header onLogoClick={resetWizard} />
+      <Header onLogoClick={resetWizard} onViewTournaments={() => setStage('list')} />
       {syncError && <SyncErrorBanner />}
 
       <main className="mx-auto max-w-2xl px-4 pb-28 pt-8 sm:px-6 sm:pb-16">

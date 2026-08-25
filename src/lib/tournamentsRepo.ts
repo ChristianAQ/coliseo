@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, orderBy, query, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import type { Tournament } from '@/types';
 
@@ -7,6 +7,11 @@ const LAST_TOURNAMENT_KEY = 'coliseo:lastTournamentId';
 
 export async function saveTournament(tournament: Tournament): Promise<void> {
   await setDoc(doc(db, COLLECTION, tournament.id), tournament);
+}
+
+export async function listTournaments(): Promise<Tournament[]> {
+  const snap = await getDocs(query(collection(db, COLLECTION), orderBy('createdAt', 'desc')));
+  return snap.docs.map((d) => d.data() as Tournament);
 }
 
 export async function loadTournament(id: string): Promise<Tournament | null> {
