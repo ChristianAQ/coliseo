@@ -11,6 +11,13 @@ const firebaseConfig = {
 };
 
 export const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
-// Los Match tienen campos opcionales (label, nextMatchId...) que llegan como
-// `undefined` en vez de omitidos, y Firestore rechaza ese valor por defecto.
-export const db: Firestore = initializeFirestore(firebaseApp, { ignoreUndefinedProperties: true });
+export const db: Firestore = initializeFirestore(firebaseApp, {
+  // Los Match tienen campos opcionales (label, nextMatchId...) que llegan como
+  // `undefined` en vez de omitidos, y Firestore rechaza ese valor por defecto.
+  ignoreUndefinedProperties: true,
+  // Algunas redes (proxies corporativos, ciertos bloqueadores de anuncios) cortan
+  // el streaming WebChannel que usa Firestore por defecto y el SDK lo confunde con
+  // estar offline ("Failed to get document because the client is offline"). Con
+  // esto, detecta ese caso y cae automáticamente a long-polling.
+  experimentalAutoDetectLongPolling: true,
+});

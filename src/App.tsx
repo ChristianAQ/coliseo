@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles, WifiOff } from 'lucide-react';
 import { Header } from '@/components/Layout/Header';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 import { Button } from '@/components/ui/Button';
@@ -22,6 +22,15 @@ const FREE_MAX = 24;
 
 function makeInitialNames(count: number) {
   return Array.from({ length: count }, () => '');
+}
+
+function SyncErrorBanner() {
+  return (
+    <div className="flex items-center justify-center gap-2 bg-defeat-600 px-4 py-2 text-center text-xs font-medium text-white sm:text-sm">
+      <WifiOff className="h-4 w-4 shrink-0" />
+      No se ha podido sincronizar con la base de datos. Tus cambios quedan en este dispositivo hasta que vuelva la conexión.
+    </div>
+  );
 }
 
 function isBracketFormat(format: TournamentFormat) {
@@ -50,6 +59,7 @@ export default function App() {
   const [qualifiersCount, setQualifiersCount] = useState(4);
 
   const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [syncError, setSyncError] = useState(false);
 
   // Al arrancar, si hay un torneo guardado (Firestore) intentamos retomarlo
   // para que no se pierda al recargar la página.
@@ -71,6 +81,7 @@ export default function App() {
       })
       .catch((err) => {
         console.error('No se pudo cargar el torneo guardado en Firestore', err);
+        setSyncError(true);
         setStage('wizard');
       });
   }, []);
@@ -78,9 +89,12 @@ export default function App() {
   // Persiste en Firestore cada cambio del torneo activo (resultados, playoffs...).
   useEffect(() => {
     if (!tournament) return;
-    void saveTournament(tournament).catch((err) => {
-      console.error('No se pudo guardar el torneo en Firestore', err);
-    });
+    saveTournament(tournament)
+      .then(() => setSyncError(false))
+      .catch((err) => {
+        console.error('No se pudo guardar el torneo en Firestore', err);
+        setSyncError(true);
+      });
   }, [tournament]);
 
   const handleCountChange = (count: number) => {
@@ -206,6 +220,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-stone-100">
         <Header onLogoClick={resetWizard} />
+        {syncError && <SyncErrorBanner />}
         <TournamentPage
           tournament={tournament}
           onReportResult={handleReportResult}
@@ -220,6 +235,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-stone-100">
       <Header onLogoClick={resetWizard} />
+      {syncError && <SyncErrorBanner />}
 
       <main className="mx-auto max-w-2xl px-4 pb-28 pt-8 sm:px-6 sm:pb-16">
         <div className="mb-7">
