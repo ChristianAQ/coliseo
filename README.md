@@ -94,9 +94,10 @@ Ya viene preparado:
    `base: '/coliseo/'` por `'/<tu-repo>/'`. Si vas a publicar en la raíz de
    `<usuario>.github.io` o con dominio propio, pon `base: '/'`.
 3. En GitHub: **Settings → Pages → Source → GitHub Actions**.
-4. En **Settings → Secrets and variables → Actions → Variables**, añade las
-   6 variables `VITE_FIREBASE_*` (las mismas de tu `.env.local`) para que el
-   build de producción incluya la configuración de Firebase.
+4. En **Settings → Secrets and variables → Actions**, añade las 6 variables
+   `VITE_FIREBASE_*` (las mismas de tu `.env.local`) para que el build de
+   producción incluya la configuración de Firebase — da igual si las pones
+   en la pestaña **Variables** o en **Secrets**, el workflow admite las dos.
 5. Haz push a `master`. El workflow `.github/workflows/deploy.yml` compila y
    publica automáticamente en cada push.
 6. Al cabo de un minuto tendrás la app en `https://<usuario>.github.io/coliseo/`.
